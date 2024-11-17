@@ -1,0 +1,7 @@
+scapy
+yfinance
+pylama
+black
+pylint
+netmiko
+python-dotenv
