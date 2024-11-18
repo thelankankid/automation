@@ -23,11 +23,29 @@ if __name__ == "__main__":
         print("_" * 80)
         lines = interfaces.splitlines()
         for line in lines:
-            #if "Interface" not in line and "unassigned" not in line and "VirtualPortGroup" not in line:
-            if all(keyword not in line for keyword in ["Interface", "unassigned", "VirtualPortGroup"]):
+            # if "Interface" not in line and "unassigned" not in line and
+            # VirtualPortGroup" not in line:
+            if all(
+                keyword not in line
+                for keyword in ["Interface", "unassigned", "VirtualPortGroup"]
+            ):
                 int_name = line[:22].strip()
                 ip = line[23:36].strip()
-                print(f"{int_name} - {ip}")
+                interface_config = (
+                    utils.get_interface_config(connection, int_name)
+                ).splitlines()
+                for line in interface_config:
+                    if all(keyword in line for keyword in ["ip address"]):
+                        netmask = line.strip().split()[3]
+                        if "255.255.255.0" in netmask:
+                            CIDR = "24"
+                        elif "255.255.255.255" in netmask:
+                            CIDR = "32"
+                        elif "255.255.255.248" in netmask:
+                            CIDR = "29"
+                        else:
+                            CIDR = "unknown"
+                print(f"{int_name} - {ip}/{CIDR}")
         print("_" * 80)
 
     if connection:

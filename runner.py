@@ -18,12 +18,15 @@ if __name__ == "__main__":
 
     connection = utils.device_connect(HOST, DEVICE_TYPE, USERNAME, PASSWORD)
 
-    cmd_to_run = input("Enter command to run: ")
-    cmd = utils.run_command(connection, cmd_to_run)
-    if cmd:
-        print("_" * 80)
-        print(cmd)
-        print("_" * 80)
+    prompt = ""
+    while prompt != "x":
+        cmd_to_run = input("Enter command to run: ")
+        cmd = utils.run_command(connection, cmd_to_run)
+        if cmd:
+            print("_" * 80)
+            print(cmd)
+            print("_" * 80)
+        prompt = input("Press Enter to Continue or x to exit: ")
 
     if connection:
         connection.disconnect()

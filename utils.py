@@ -20,14 +20,14 @@ def device_connect(host, device_type, username, password):
     """
     try:
         net_connect = netmiko.ConnectHandler(
-            #ip=ip,
+            # ip=ip,
             host=host,
             device_type=device_type,
             username=username,
             password=password,
             port=22,
         )
-        #print(f"Successfully connected to {ip}")
+        # print(f"Successfully connected to {ip}")
         print(f"Successfully connected to {host}")
         return net_connect
     except netmiko.NetmikoTimeoutException as e:
@@ -84,6 +84,7 @@ def show_version(net_connect):
         print("Connection object is invalid.")
         return None
 
+
 def get_serial_num(net_connect):
     """
     Retrieves Serial number from Cisco device.
@@ -106,6 +107,7 @@ def get_serial_num(net_connect):
         print("Connection object is invalid.")
         return None
 
+
 def get_ip_interfaces(net_connect):
     """
     Retrieves IP interfaces from Cisco device.
@@ -119,7 +121,7 @@ def get_ip_interfaces(net_connect):
     if net_connect:
         try:
             interfaces = net_connect.send_command("show ip interface brief")
-            #serial_num = sho_ver[19:30]
+            # serial_num = sho_ver[19:30]
             return interfaces
         except Exception as e:
             print(f"Error executing command: {e}")
@@ -127,7 +129,8 @@ def get_ip_interfaces(net_connect):
     else:
         print("Connection object is invalid.")
         return None
-    
+
+
 def run_command(net_connect, command):
     """
     Runs a specified command on the network device.
@@ -143,6 +146,18 @@ def run_command(net_connect, command):
         try:
             cmd = net_connect.send_command(command)
             return cmd
+        except Exception as e:
+            print(f"Error executing command: {e}")
+            return None
+    else:
+        print("Connection object is invalid.")
+        return None
+
+def get_interface_config(net_connect, interface):
+    if net_connect:
+        try:
+            interface_config = net_connect.send_command("show run interface "+ interface )
+            return interface_config
         except Exception as e:
             print(f"Error executing command: {e}")
             return None
