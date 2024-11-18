@@ -1,10 +1,10 @@
 """
-    Main runner script for network automation
+    Script to gather Serial number
 """
 
 import os
 from dotenv import load_dotenv
-import utils
+from utils import netutils as net
 
 
 if __name__ == "__main__":
@@ -16,9 +16,9 @@ if __name__ == "__main__":
     USERNAME = os.getenv("USERNAME")
     PASSWORD = os.getenv("PASSWORD")
 
-    connection = utils.device_connect(HOST, DEVICE_TYPE, USERNAME, PASSWORD)
+    connection = net.device_connect(HOST, DEVICE_TYPE, USERNAME, PASSWORD)
 
-    serial = utils.get_serial_num(connection)
+    serial = net.get_serial_num(connection)
     if serial:
         print("_" * 80)
         print(f"Device serial #: {serial}")

@@ -1,10 +1,10 @@
 """
-    Main runner script for network automation
+    Script to gather interface config
 """
 
 import os
 from dotenv import load_dotenv
-import utils
+from utils import netutils as net
 
 
 if __name__ == "__main__":
@@ -16,9 +16,9 @@ if __name__ == "__main__":
     USERNAME = os.getenv("USERNAME")
     PASSWORD = os.getenv("PASSWORD")
 
-    connection = utils.device_connect(HOST, DEVICE_TYPE, USERNAME, PASSWORD)
+    connection = net.device_connect(HOST, DEVICE_TYPE, USERNAME, PASSWORD)
 
-    interfaces = utils.get_ip_interfaces(connection)
+    interfaces = net.get_ip_interfaces(connection)
     if interfaces:
         print("_" * 80)
         lines = interfaces.splitlines()
@@ -32,7 +32,7 @@ if __name__ == "__main__":
                 int_name = line[:22].strip()
                 ip = line[23:36].strip()
                 interface_config = (
-                    utils.get_interface_config(connection, int_name)
+                    net.get_interface_config(connection, int_name)
                 ).splitlines()
                 for line in interface_config:
                     if all(keyword in line for keyword in ["ip address"]):

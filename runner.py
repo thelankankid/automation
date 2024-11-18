@@ -4,7 +4,7 @@
 
 import os
 from dotenv import load_dotenv
-import utils
+from utils import netutils as net
 
 
 if __name__ == "__main__":
@@ -16,12 +16,12 @@ if __name__ == "__main__":
     USERNAME = os.getenv("USERNAME")
     PASSWORD = os.getenv("PASSWORD")
 
-    connection = utils.device_connect(HOST, DEVICE_TYPE, USERNAME, PASSWORD)
+    connection = net.device_connect(HOST, DEVICE_TYPE, USERNAME, PASSWORD)
 
     prompt = ""
     while prompt != "x":
         cmd_to_run = input("Enter command to run: ")
-        cmd = utils.run_command(connection, cmd_to_run)
+        cmd = net.run_command(connection, cmd_to_run)
         if cmd:
             print("_" * 80)
             print(cmd)
