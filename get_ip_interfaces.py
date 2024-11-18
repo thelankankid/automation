@@ -18,11 +18,16 @@ if __name__ == "__main__":
 
     connection = utils.device_connect(HOST, DEVICE_TYPE, USERNAME, PASSWORD)
 
-    cmd_to_run = input("Enter command to run: ")
-    cmd = utils.run_command(connection, cmd_to_run)
-    if cmd:
+    interfaces = utils.get_ip_interfaces(connection)
+    if interfaces:
         print("_" * 80)
-        print(cmd)
+        lines = interfaces.splitlines()
+        for line in lines:
+            #if "Interface" not in line and "unassigned" not in line and "VirtualPortGroup" not in line:
+            if all(keyword not in line for keyword in ["Interface", "unassigned", "VirtualPortGroup"]):
+                int_name = line[:22].strip()
+                ip = line[23:36].strip()
+                print(f"{int_name} - {ip}")
         print("_" * 80)
 
     if connection:

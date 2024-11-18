@@ -18,11 +18,10 @@ if __name__ == "__main__":
 
     connection = utils.device_connect(HOST, DEVICE_TYPE, USERNAME, PASSWORD)
 
-    cmd_to_run = input("Enter command to run: ")
-    cmd = utils.run_command(connection, cmd_to_run)
-    if cmd:
+    serial = utils.get_serial_num(connection)
+    if serial:
         print("_" * 80)
-        print(cmd)
+        print(f"Device serial #: {serial}")
         print("_" * 80)
 
     if connection:
