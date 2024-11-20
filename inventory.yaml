@@ -1,0 +1,8 @@
+- hostname: devnetsandboxiosxe.cisco.com
+  ip: 131.226.217.18
+  type: cisco_ios
+  alias: sandbox
+- hostname: example.com
+  ip: 1.1.1.1
+  type: unknown
+  alias: example
