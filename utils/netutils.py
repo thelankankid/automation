@@ -3,7 +3,9 @@ Utility functions for network device interaction using Netmiko.
 """
 
 import netmiko
-
+import subprocess
+import re
+import socket
 
 def device_connect(host, device_type, username, password):
     """
@@ -164,3 +166,54 @@ def get_interface_config(net_connect, interface):
     else:
         print("Connection object is invalid.")
         return None
+
+def parse_ping_result(result):
+
+    rtt_pattern = r"round-trip min/avg/max/stddev = (\d+\.\d+)/(\d+\.\d+)/(\d+\.\d+)/(\d+\.\d+) ms"
+    pkt_loss_pattern = r"(\d+\.\d+\%) packet loss"
+
+    pkt_loss_match = re.search(pkt_loss_pattern, result)
+    rtt_match = re.search(rtt_pattern, result)
+
+    formatted_result = ""
+    if pkt_loss_match:
+        pkt_loss = pkt_loss_match.group(1)
+        formatted_result += (f"\tPacket loss: {pkt_loss}\n")
+    if rtt_match:
+        min_rtt = rtt_match.group(1)
+        avg_rtt = rtt_match.group(2)
+        max_rtt = rtt_match.group(3)
+        formatted_result += (f"\tMinimum RTT: {min_rtt} ms\n")
+        formatted_result += (f"\tAverage RTT: {avg_rtt} ms\n")
+        formatted_result += (f"\tMaximum RTT: {max_rtt} ms\n")
+    
+    final_output = ("="*20 + " Reachability test " + "="*20 + "\n")
+    final_output += formatted_result
+    return final_output
+
+def ping_device(host):
+    """Pings a host and returns the result."""
+    try:
+        result = subprocess.run(
+            ["ping", "-c", "2", host],
+            capture_output=True,
+            text=True
+        )
+        #print(result)
+        if result.returncode == 0:
+            return parse_ping_result(result.stdout)
+            
+        else:
+            return f"Ping failed:\n{result.stderr}"
+    except FileNotFoundError:
+        return "Error: The 'ping' command is not found"
+    except Exception as e:
+        return f"An unexpected error occurred: {e}"
+
+def check_port(host, port):
+    """Connects to a port and returns the result."""
+    try:
+        with socket.create_connection((host, port), timeout=2):
+            return f"Port {port} is open"
+    except (socket.timeout, ConnectionRefusedError):
+        return f"Port {port} is NOT open"
